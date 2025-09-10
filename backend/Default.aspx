@@ -1,4 +1,4 @@
-
+<%@ Page Language="C#" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,9 +14,10 @@
         <p>Salaam from the backend server!</p>
         <p>Server Time (Pakistan Standard Time): 
             <% 
-                // Set the time zone to Pakistan Standard Time
-                TimeZoneInfo pstZone = TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time");
-                DateTime pstTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, pstZone);
+                // Get the current universal time (UTC)
+                DateTime utcTime = DateTime.UtcNow;
+                // Add 5 hours to convert it to Pakistan Standard Time (UTC+5)
+                DateTime pstTime = utcTime.AddHours(5);
                 Response.Write(pstTime.ToString("F"));
             %>
         </p>
@@ -24,3 +25,4 @@
     </div>
 </body>
 </html>
+
