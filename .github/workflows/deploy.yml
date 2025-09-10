@@ -1,0 +1,40 @@
+name: Deploy to AWS EC2
+
+# Yeh workflow 'main' branch par push hone par chalega
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Code ko checkout karein
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Code ko EC2 instance par copy karein
+      # Yeh action SSH ka istemal karke files copy karta hai
+      - name: Copy files to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          source: "frontend/,backend/"
+          target: ${{ secrets.TARGET_DIR }}
+          
+      # Step 3: (Optional) Server par koi command run karein
+      # Jaise ke IIS restart karna
+      - name: Restart IIS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            iisreset
